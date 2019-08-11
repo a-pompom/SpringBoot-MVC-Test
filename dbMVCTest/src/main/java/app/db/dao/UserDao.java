@@ -3,8 +3,8 @@ package app.db.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.db.entity.User;
@@ -12,7 +12,7 @@ import app.db.entity.User;
 @Component
 public class UserDao {
 	
-	@PersistenceContext
+	@Autowired
 	EntityManager em;
 	
 	
