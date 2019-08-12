@@ -27,6 +27,7 @@ import app.db.entity.User;
 import app.db.main.DbMvcTestApplication;
 
 /**
+ * DBからテーブルデータを取得するテストを行うためのテストクラス
  * @ExtendWith...JUnit5でテストクラスを扱うためのアノテーション
  * @DbUnitConfiguration...XMLからCSVを読み込むための設定を取得
  * @TestExecutionListeners...TestContextへ設定する前処理を登録するためのもの
@@ -46,9 +47,17 @@ import app.db.main.DbMvcTestApplication;
 @SpringBootTest(classes = DbMvcTestApplication.class)
 public class DBSelectTest {
 	
+	// 永続化のライフサイクルを扱うためのアノテーション
 	@PersistenceContext
     protected EntityManager em;
 	
+	// DatabaseSetupのvalueにCSVファイルのパスを設定することで、「table-ordering.txt」を参照し、
+	// 順次テーブルを作成することでテスト用のテーブル群を作成する
+	// このとき、valueのパスは「src/test/recources」配下を起点とし、CSVファイルのファイル名は
+	// テーブルの名前と対応させることとする
+	//
+	// また、@Transactionalアノテーションを付与することで、テストが終わるとトランザクションをロールバックすることで
+	// 環境を汚すことなくテストができる
 	@Test
 	@DatabaseSetup(value = "/testData/")
 	@Transactional
@@ -58,6 +67,7 @@ public class DBSelectTest {
 		
 		List<User> userList = userDao.findAllUser();
 		
+		// Daoで正常にテーブルからレコードを取得できたか
 		assertThat(userList.size(), is(2));
 	}
 
