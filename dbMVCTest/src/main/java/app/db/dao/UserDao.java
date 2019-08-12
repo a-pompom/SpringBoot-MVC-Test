@@ -34,9 +34,10 @@ public class UserDao {
 	@SuppressWarnings("unchecked")
 	public List<User> findAllUser() {
 		
-		String query = "select * from tm_user";
-		
-		return em.createNativeQuery(query).getResultList();
+		String query = "select user_id, user_name from tm_user";
+		List<User> result = em.createNativeQuery(query, User.class).getResultList();
+		return result;
+		//return (List<User>)em.createNativeQuery(query, User.class).getResultList();
 	}
 
 }

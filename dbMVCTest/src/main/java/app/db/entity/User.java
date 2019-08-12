@@ -10,12 +10,12 @@ import javax.persistence.Table;
 public class User {
 	
 	@Id
-	@Column(name = "user_id")
 	private Long userId;
 	
-	@Column(name = "usre_name")
+	
 	private String userName;
 
+	@Column(name = "user_id")
 	public Long getUserId() {
 		return userId;
 	}
@@ -23,7 +23,8 @@ public class User {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-
+	
+	@Column(name = "usre_name")
 	public String getUserName() {
 		return userName;
 	}
