@@ -9,7 +9,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +30,11 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import app.db.controller.HelloDBController;
 import app.db.main.DbMvcTestApplication;
 
+/**
+ * DBUnitで作成したテストデータがモデルに正常に渡されるか検証するためのテストクラス
+ * @author aoi
+ *
+ */
 @ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
@@ -51,6 +55,8 @@ public class DBModelTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	// DBUnitでテストデータを設定し、Daoから取得した結果へCSV内のレコードが存在するか検証
+	// @Transactionalにより、実行後はロールバックされ、DBは汚れることなく保たれる
 	@Test
 	@DatabaseSetup(value = "/testData/")
 	@Transactional

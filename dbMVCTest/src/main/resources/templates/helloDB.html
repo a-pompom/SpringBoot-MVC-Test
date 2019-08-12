@@ -5,5 +5,8 @@
 <body>
 	<p>Hello DBWorld!!!</p>
 	
+	<ul th:each="user : ${dbForm.userList}">
+		<li th:text="${user.userName}"></li>
+	</ul>
 </body>
 </html>
