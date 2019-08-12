@@ -8,6 +8,7 @@ import com.github.springtestdbunit.dataset.AbstractDataSetLoader;
 
 /**
  * DBUnitでDataSetをCSVで扱うためのローダー
+ * 既存のものはXMLとなっているので、CSVを扱うようOverride
  * @author aoi
  *
  */

@@ -26,6 +26,15 @@ import app.db.dao.UserDao;
 import app.db.entity.User;
 import app.db.main.DbMvcTestApplication;
 
+/**
+ * @ExtendWith...JUnit5でテストクラスを扱うためのアノテーション
+ * @DbUnitConfiguration...XMLからCSVを読み込むための設定を取得
+ * @TestExecutionListeners...TestContextへ設定する前処理を登録するためのもの
+ * @SpringBootTest...SpringBootのアプリとしてテストを行うためのアノテーション application.propertiesなどの設定を利用するために設定
+ * 
+ * @author aoi
+ *
+ */
 @ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
@@ -35,7 +44,7 @@ import app.db.main.DbMvcTestApplication;
 	  DbUnitTestExecutionListener.class
 	})
 @SpringBootTest(classes = DbMvcTestApplication.class)
-public class DbMvcTestApplicationTests {
+public class DBSelectTest {
 	
 	@PersistenceContext
     protected EntityManager em;
