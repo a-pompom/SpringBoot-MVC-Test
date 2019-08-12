@@ -10,13 +10,13 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -28,7 +28,6 @@ import app.db.main.DbMvcTestApplication;
 
 @ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestExecutionListeners({
 	  DependencyInjectionTestExecutionListener.class,
 	  DirtiesContextTestExecutionListener.class,
@@ -43,6 +42,7 @@ public class DbMvcTestApplicationTests {
 	
 	@Test
 	@DatabaseSetup(value = "/testData/")
+	@Transactional
 	public void contextLoads() throws Exception {
 		
 		UserDao userDao = new UserDao(em);
