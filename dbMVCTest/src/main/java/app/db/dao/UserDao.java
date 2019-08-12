@@ -12,12 +12,16 @@ import app.db.entity.User;
 @Component
 public class UserDao {
 	
-	@Autowired
-	EntityManager em;
+	private EntityManager em;
+	
+	public UserDao(EntityManager em) {
+		this.em = em;
+	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<User> findAllUser() {
+		
 		String query = "select * from tm_user";
 		
 		return em.createNativeQuery(query).getResultList();
