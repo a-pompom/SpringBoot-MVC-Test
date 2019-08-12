@@ -28,8 +28,12 @@ public class HelloController {
 		User user = new User();
 		user.setUserId(0L);
 		user.setUserName("test0");
+		User user2 = new User();
+		user2.setUserId(1L);
+		user2.setUserName("test1");
 		
 		userList.add(user);
+		userList.add(user2);
 		
 		// フォームにユーザのリストを設定し、モデル追加することでモデルへ正常に追加されたか検証するための土台を整える
 		DBForm form = new DBForm();
