@@ -12,6 +12,7 @@
 			<li>
 				<input type="text" th:field="*{userName}">
 				<button type="submit" th:formaction="@{/crud/save/__${i.index}__/__*{userId}__}">Update</button>
+				<button type="submit" th:formaction="@{/crud/delete/__*{userId}__}">Delete</button>
 			</li>
 			
 		</ul>

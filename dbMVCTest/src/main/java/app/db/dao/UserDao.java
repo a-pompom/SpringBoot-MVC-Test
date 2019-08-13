@@ -42,8 +42,21 @@ public class UserDao {
 	}
 	
 	@Transactional
-	public User saveOrUpdate(User user) {
-		return em.merge(user);
+	public void saveOrUpdate(User user) {
+		
+		String query = "update tm_user set user_name = '" + user.getUserName() + "' ";
+		query += "where user_id = " + user.getUserId();
+		
+		em.createNativeQuery(query).executeUpdate();
+		
+	}
+	
+	@Transactional
+	public void delete(int userId) {
+		
+		String query = "delete from tm_user where user_id = " + userId;
+		
+		em.createNativeQuery(query).executeUpdate();
 	}
 
 }

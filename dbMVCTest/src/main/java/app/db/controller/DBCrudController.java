@@ -58,6 +58,14 @@ public class DBCrudController {
 		return "redirect:/crud/init";
 	}
 	
+	@RequestMapping("/delete/{userId}")
+	private String delete(@PathVariable("userId")int userId, DbForm form) {
+		
+		userDao.delete(userId);
+		
+		return "redirect:/crud/init";
+	}
+	
 	
 	@ModelAttribute("dbForm")
 	DbForm setupForm() {
