@@ -1,4 +1,4 @@
-package app.db.test;
+package app.db.test.crud;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +31,14 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import app.db.controller.DBCrudController;
 import app.db.main.DbMvcTestApplication;
+import app.db.test.CsvDataSetLoader;
 
+/**
+ * コントローラのテストクラス
+ * 画面へ渡されるモデル・POSTリクエストでDBが更新されるかを検証する
+ * @author aoi
+ *
+ */
 @ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
@@ -44,19 +50,20 @@ import app.db.main.DbMvcTestApplication;
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {DBCrudController.class, DbMvcTestApplication.class})
 @Transactional
-public class DBCrudTest {
+public class CRUDControllerTest {
 	
 	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
 	@Autowired
 	private MockMvc mockMvc;
 	
-	
-	@DatabaseSetup(value = "/testData/")
+	// DBUnitでテストデータを設定し、Daoから取得した結果へCSV内のレコードが存在するか検証
+	// @Transactionalにより、実行後はロールバックされ、DBは汚れることなく保たれる
+	@Test
+	@DatabaseSetup(value = "/CRUD/setUp/")
 	@Transactional
-	void ステータス200が返る() throws Exception {
+	void DBからの取得結果が全てモデルへ格納される() throws Exception {
 		
-		this.mockMvc.perform(get("/crud/init"))
-			.andExpect(status().isOk())
+		this.mockMvc.perform(get("/helloDB/init")).andDo(print())
 			.andExpect(model().attribute("dbForm", hasProperty(
 					"userList", hasItem(
 						hasProperty(
@@ -64,30 +71,27 @@ public class DBCrudTest {
 						)
 					)
 			)));
+		
 	}
 	
 	@Test
-	@DatabaseSetup(value = "/testData/")
-	@ExpectedDatabase(value = "/expectedData/", assertionMode=DatabaseAssertionMode.NON_STRICT)
+	@DatabaseSetup(value = "/CRUD/setUp/")
+	@ExpectedDatabase(value = "/CRUD/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void フォームの入力値でDBが更新される() throws Exception {
 		
-		MvcResult result = this.mockMvc.perform(post("/crud/save/0/1")
+		MvcResult result = mockMvc.perform(post("/crud/save/0/1")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("userList[0].userName", "test1mod")).andDo(print()).andReturn();
-		
 	}
 	
-	@DatabaseSetup(value = "/testData/")
-	@ExpectedDatabase(value = "/expectedData/", assertionMode=DatabaseAssertionMode.NON_STRICT)
-	void 削除ボタンクリックでユーザが削除される() throws Exception {
+	@Test
+	@DatabaseSetup(value = "/CRUD/setUp/")
+	@ExpectedDatabase(value = "/CRUD/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
+	void フォームからDBのレコードが削除できる() throws Exception {
 		
-		MvcResult result = this.mockMvc.perform(post("/crud/delete/1")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				).andDo(print()).andReturn();
-		
-		
+		mockMvc.perform(post("/crud/delete/1")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
+				
 	}
-	
-	
 
 }

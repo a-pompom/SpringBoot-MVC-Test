@@ -44,11 +44,12 @@ public class UserDao {
 	@Transactional
 	public void saveOrUpdate(User user) {
 		
-		String query = "update tm_user set user_name = '" + user.getUserName() + "' ";
-		query += "where user_id = " + user.getUserId();
-		
-		em.createNativeQuery(query).executeUpdate();
-		
+//		String query = "update tm_user set user_name = '" + user.getUserName() + "' ";
+//		query += "where user_id = " + user.getUserId();
+//		
+//		em.createNativeQuery(query).executeUpdate();
+		em.merge(user);
+		em.flush();
 	}
 	
 	@Transactional
@@ -58,5 +59,6 @@ public class UserDao {
 		
 		em.createNativeQuery(query).executeUpdate();
 	}
+	
 
 }
