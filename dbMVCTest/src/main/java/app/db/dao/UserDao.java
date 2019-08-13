@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.db.entity.User;
 
@@ -38,6 +39,11 @@ public class UserDao {
 		List<User> result = em.createNativeQuery(query, User.class).getResultList();
 		return result;
 		//return (List<User>)em.createNativeQuery(query, User.class).getResultList();
+	}
+	
+	@Transactional
+	public User saveOrUpdate(User user) {
+		return em.merge(user);
 	}
 
 }

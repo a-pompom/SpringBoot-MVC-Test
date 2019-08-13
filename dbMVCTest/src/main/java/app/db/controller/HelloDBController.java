@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.db.dao.UserDao;
 import app.db.entity.User;
-import app.db.form.DBForm;
+import app.db.form.DbForm;
 
 @Controller
 @RequestMapping("/helloDB")
@@ -23,7 +23,7 @@ public class HelloDBController {
 		
 		List<User> userList = userDao.findAllUser();
 		
-		DBForm form = new DBForm();
+		DbForm form = new DbForm();
 		form.setUserList(userList);
 		
 		model.addAttribute("dbForm", form);
