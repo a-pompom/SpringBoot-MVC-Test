@@ -1,20 +1,46 @@
 package app.todo.test;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+
+import app.db.controller.TodoController;
 
 /**
  * TODOリストのコントローラのテストクラス
  * @author aoi
  *
  */
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+@SpringBootTest(classes = TodoController.class)
 public class TodoControllerTest {
+	
+	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Test
+	void init処理でviewとしてtodoが渡される() throws Exception {
+		this.mockMvc.perform(get("/todo/init")).andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(view().name("todo"));
+	}
 	
 	@Test
 	void init処理で既存のタスクがモデルへ渡される() {
 		
 		// mockMvcで「/todo/init」へgetリクエストを送信
 		
-		// ビューとして「todo」が渡され、
 		// モデルへDBのレコードがリストとして渡される
 	}
 	
