@@ -1,0 +1,37 @@
+ul {
+  list-style: none; }
+
+button {
+  text-decoration: none;
+  text-align: center;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: #fff;
+  cursor: pointer; }
+
+.container {
+  width: 90%;
+  height: 100%;
+  text-align: center;
+  margin: 20px auto; }
+
+.new-task__text {
+  width: 45%;
+  height: 30px;
+  font-size: 1.3rem; }
+.new-task__button {
+  font-weight: bold; }
+
+.todo-list__item-text {
+  width: 60%;
+  height: 25px; }
+.todo-list__item-button {
+  font-size: 1.1rem; }
+
+.button--save {
+  background-color: #c9f0ff; }
+
+.button--delete {
+  background-color: #fa5050; }
+
+/*# sourceMappingURL=style.css.map */
