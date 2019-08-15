@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <link rel="stylesheet" href="/style.css">
         <title>TODOリスト</title>
@@ -11,11 +11,11 @@
 
             <hr>
 
-            <form method="post">
+            <form method="post" th:object="${todoForm}">
 
                 <div class="new-task">
                     <h4>新しくやること</h4>
-                    <input type="text" placeholder="やること" class="new-task__text">
+                    <input type="text" placeholder="やること" th:field="*{newTask}" class="new-task__text">
                     <button type="submit" formaction="/todo/save" class="new-task__button button--save">やること追加</button>
                 </div>
                 
