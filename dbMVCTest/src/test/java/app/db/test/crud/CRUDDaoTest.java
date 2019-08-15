@@ -58,6 +58,8 @@ public class CRUDDaoTest {
 		this.userDao = new UserDao(em);
 	}
 	
+	// select処理が正常に動作するか検証
+	// 今回はただselectで取得しているだけなので、サイズから妥当性を検証する。
 	@Test
 	@DatabaseSetup(value = "/testData/")
 	void DBからユーザ一覧を取得できる() {
@@ -66,6 +68,10 @@ public class CRUDDaoTest {
 		assertThat(actual, is(2));
 	}
 	
+	/**
+	 * delete処理でレコードが削除されるか検証する
+	 * 処理前後のDBを用意し、削除後に想定結果となるか比較することで妥当性を検証
+	 */
 	@Test
 	@DatabaseSetup(value = "/CRUD/setUp/")
 	@ExpectedDatabase(value = "/CRUD/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
@@ -73,6 +79,10 @@ public class CRUDDaoTest {
 		userDao.delete(1);
 	}
 	
+	/**
+	 * update処理で既存レコードがupdateされるか検証する
+	 * エンティティによってDBが想定通りに書き換えられたかExpectedDatabaseと比較することで検証
+	 */
 	@Test
 	@DatabaseSetup(value = "/CRUD/setUp/")
 	@ExpectedDatabase(value = "/CRUD/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)

@@ -20,7 +20,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -49,7 +48,7 @@ import app.db.test.CsvDataSetLoader;
 	})
 @AutoConfigureMockMvc
 @SpringBootTest(classes = {DBCrudController.class, DbMvcTestApplication.class})
-@Transactional
+@Transactional // クラス単位に@Transactionalアノテーションを付与することでテストの度にDBがロールバックされる
 public class CRUDControllerTest {
 	
 	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
@@ -57,10 +56,8 @@ public class CRUDControllerTest {
 	private MockMvc mockMvc;
 	
 	// DBUnitでテストデータを設定し、Daoから取得した結果へCSV内のレコードが存在するか検証
-	// @Transactionalにより、実行後はロールバックされ、DBは汚れることなく保たれる
 	@Test
 	@DatabaseSetup(value = "/CRUD/setUp/")
-	@Transactional
 	void DBからの取得結果が全てモデルへ格納される() throws Exception {
 		
 		this.mockMvc.perform(get("/helloDB/init")).andDo(print())
@@ -74,16 +71,27 @@ public class CRUDControllerTest {
 		
 	}
 	
+	/**
+	 * DBのアップデート処理を検証
+	 * POSTリクエストをmockMvcで作成し、リクエストをもとにDBが更新されるか検証。
+	 */
 	@Test
 	@DatabaseSetup(value = "/CRUD/setUp/")
 	@ExpectedDatabase(value = "/CRUD/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void フォームの入力値でDBが更新される() throws Exception {
 		
-		MvcResult result = mockMvc.perform(post("/crud/save/0/1")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("userList[0].userName", "test1mod")).andDo(print()).andReturn();
+		// contentType...フォームの入力値をPOSTで送信するときのもの
+		// param...マップ形式でパラメーター名、値を設定 パラメーター名はname属性と対応
+		this.mockMvc.perform(post("/crud/save/0/1")
+			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.param("userList[0].userName", "test1mod")).andDo(print());
 	}
 	
+	/**
+	 * DBの削除処理を検証
+	 * POSTリクエストで削除対象のユーザIDを指定することでDBから対象レコードが削除されたか検証
+	 * 
+	 */
 	@Test
 	@DatabaseSetup(value = "/CRUD/setUp/")
 	@ExpectedDatabase(value = "/CRUD/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
