@@ -1,24 +1,69 @@
 package app.todo.test;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+
+import app.db.dao.TodoDao;
+import app.db.entity.TodoItem;
+import app.db.main.DbMvcTestApplication;
+import app.db.test.CsvDataSetLoader;
 
 /**
  * TODOリストのDaoのテストクラス
  * @author aoi
  *
  */
+@ExtendWith(SpringExtension.class)
+@DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
+@TestExecutionListeners({
+	  DependencyInjectionTestExecutionListener.class,
+	  DirtiesContextTestExecutionListener.class,
+	  TransactionalTestExecutionListener.class,
+	  DbUnitTestExecutionListener.class
+	})
+@SpringBootTest(classes = {DbMvcTestApplication.class})
+@Transactional
 public class TodoDaoTest {
+	
+	// 永続化のライフサイクルを扱うためのアノテーション
+	@PersistenceContext
+	private EntityManager em;
+	
+	private TodoDao todoDao;
 	
 	@BeforeEach
 	void setUp() {
 		// EntityManagerからDaoを作成
+		this.todoDao = new TodoDao(em);
+		
 	}
 	
 	@Test
+	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void createTaskでエンティティから新規タスクが生成される() {
+		TodoItem entity = new TodoItem();
+		entity.setTask("newTask4");
+		
 		// DaoのcreateTaskメソッドを実行
-		// このとき、タスクEntityを引数として渡す
+		todoDao.createTask(entity);
 		
 		// 実行後のDBに期待結果DBと同様の新規タスクレコードが追加されていること
 	}
