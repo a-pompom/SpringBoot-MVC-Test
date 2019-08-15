@@ -9,7 +9,7 @@ import app.db.entity.User;
  * @author aoi
  *
  */
-public class DBForm {
+public class DbForm {
 	
 	private List<User> userList;
 

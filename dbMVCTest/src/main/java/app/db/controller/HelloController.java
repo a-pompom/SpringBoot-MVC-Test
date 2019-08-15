@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.db.entity.User;
-import app.db.form.DBForm;
+import app.db.form.DbForm;
 
 /**
  * リクエストの正しさを検証する際に利用するコントローラ
@@ -36,7 +36,7 @@ public class HelloController {
 		userList.add(user2);
 		
 		// フォームにユーザのリストを設定し、モデル追加することでモデルへ正常に追加されたか検証するための土台を整える
-		DBForm form = new DBForm();
+		DbForm form = new DbForm();
 		form.setUserList(userList);
 		
 		model.addAttribute("message", "hello!");

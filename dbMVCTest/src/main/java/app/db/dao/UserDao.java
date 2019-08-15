@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.db.entity.User;
 
@@ -39,5 +40,25 @@ public class UserDao {
 		return result;
 		//return (List<User>)em.createNativeQuery(query, User.class).getResultList();
 	}
+	
+	@Transactional
+	public void saveOrUpdate(User user) {
+		
+//		String query = "update tm_user set user_name = '" + user.getUserName() + "' ";
+//		query += "where user_id = " + user.getUserId();
+//		
+//		em.createNativeQuery(query).executeUpdate();
+		em.merge(user);
+		em.flush();
+	}
+	
+	@Transactional
+	public void delete(int userId) {
+		
+		String query = "delete from tm_user where user_id = " + userId;
+		
+		em.createNativeQuery(query).executeUpdate();
+	}
+	
 
 }

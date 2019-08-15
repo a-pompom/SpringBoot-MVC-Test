@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<p>CRUD</p>
+ 
+	
+	
+	<form action="#" method="post" th:object="${dbForm}">
+		<ul th:each="user, i : *{userList}" th:object="${dbForm.userList[__${i.index}__]}">
+			<li>
+				<input type="text" th:field="*{userName}">
+				<button type="submit" th:formaction="@{/crud/save/__${i.index}__/__*{userId}__}">Update</button>
+				<button type="submit" th:formaction="@{/crud/delete/__*{userId}__}">Delete</button>
+			</li>
+			
+		</ul>
+	</form>
+	
+		
+	
+</body>
+</html>
