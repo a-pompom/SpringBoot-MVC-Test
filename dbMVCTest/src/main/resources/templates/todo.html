@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <title>TODOリスト</title>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>TODOリスト</h2>
+
+            <hr>
+
+            <form method="post">
+
+                <div class="new-task">
+                    <input type="text" placeholder="やること" class="new-task__text">
+                    <button type="submit" formaction="/todo/save" class="new-task__button button--save">やること追加</button>
+                </div>
+                
+
+                <hr>
+
+                <ul class="todo-list">
+                    <li class="todo-list__item">
+                        <input type="text" value="task1">
+                        <button type="submit" formaction="/todo/update">編集</button>
+                        <button type="submit" formaction="/todo/delete">削除</button>
+                    </li>
+
+                    <li class="todo-list__item">
+                        <input type="text" value="task2" class="todo-list__item-text">
+                        <button type="submit" formaction="/todo/update" class="todo-list__item-button button--save">編集</button>
+                        <button type="submit" formaction="/todo/delete" class="todo-list__item-button button--delete">削除</button>
+                    </li>
+                </ul>
+
+            </form>
+
+        </div>
+        
+    </body>
+</html>
