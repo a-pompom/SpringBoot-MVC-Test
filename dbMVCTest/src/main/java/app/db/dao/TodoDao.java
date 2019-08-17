@@ -1,5 +1,7 @@
 package app.db.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +21,17 @@ public class TodoDao {
 	
 	public TodoDao(EntityManager em) {
 		this.em = em;
+	}
+	
+	/**
+	 * データベースから画面表示用に全てのタスクを取得する
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<TodoItem> findAllTask() {
+		String query = "select * from todo_list";
+		
+		return em.createNativeQuery(query, TodoItem.class).getResultList();
 	}
 	
 	/**

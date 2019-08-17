@@ -1,5 +1,10 @@
 package app.todo.test;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -60,7 +65,7 @@ public class TodoDaoTest {
 	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void createTaskでエンティティから新規タスクが生成される() {
 		TodoItem entity = new TodoItem();
-		entity.setTask("newTask4");
+		entity.setTask("newTask");
 		
 		// DaoのcreateTaskメソッドを実行
 		todoDao.createTask(entity);
@@ -68,11 +73,17 @@ public class TodoDaoTest {
 		// 実行後のDBに期待結果DBと同様の新規タスクレコードが追加されていること
 	}
 	
+	/**
+	 * findAllTaskメソッドでDBからレコードを正しく取得できているか検証する
+	 */
+	@DatabaseSetup(value = "/TODO/setUp/")
 	@Test
 	void findAllTaskで全てのタスクを取得できる() {
 		// DaoのfindAllTaskメソッドを実行
+		int actual = todoDao.findAllTask().size();
 		
 		// 今回は中身には関与しないので、全件取得できているかを「サイズ」から検証
+		assertThat(actual, is(3));
 	}
 	
 	@Test

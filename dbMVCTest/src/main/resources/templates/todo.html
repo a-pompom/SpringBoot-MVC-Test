@@ -22,17 +22,11 @@
 
                 <hr>
                 <h4>やることリスト</h4>
-                <ul class="todo-list">
+                <ul th:each="task, i : *{todoList}" th:object="${todoForm.todoList[__${i.index}__]}" class="todo-list">
                     <li class="todo-list__item">
-                        <input type="text" value="task2" class="todo-list__item-text">
-                        <button type="submit" formaction="/todo/update" class="todo-list__item-button button--save">編集</button>
-                        <button type="submit" formaction="/todo/delete" class="todo-list__item-button button--delete">削除</button>
-                    </li>
-
-                    <li class="todo-list__item">
-                        <input type="text" value="task2" class="todo-list__item-text">
-                        <button type="submit" formaction="/todo/update" class="todo-list__item-button button--save">編集</button>
-                        <button type="submit" formaction="/todo/delete" class="todo-list__item-button button--delete">削除</button>
+                        <input type="text" th:field="*{task}" class="todo-list__item-text">
+                        <button type="submit" formaction="/todo/update/__${i.index}__/__*{todoId}__" class="todo-list__item-button button--save">編集</button>
+                        <button type="submit" formaction="/todo/delete/__${i.index}__" class="todo-list__item-button button--delete">削除</button>
                     </li>
                 </ul>
 

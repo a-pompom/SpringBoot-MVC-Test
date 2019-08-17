@@ -1,5 +1,7 @@
 package app.db.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +25,8 @@ public class TodoController {
 	
 	@RequestMapping("/init")
 	private String init(TodoForm form) {
+		List<TodoItem> todoList = todoDao.findAllTask();
+		form.setTodoList(todoList);
 		
 		return "todo";
 	}

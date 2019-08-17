@@ -1,8 +1,12 @@
 package app.todo.test;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -59,12 +63,26 @@ public class TodoControllerTest {
 			.andExpect(view().name("todo"));
 	}
 	
+	/**
+	 * モデルへDBから取得したレコードが設定されたか検証する
+	 * 今回は複雑な処理でもないので、DBの中の1レコードがモデルに渡されていれば正常に動作しているとみなした
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	void init処理で既存のタスクがモデルへ渡される() {
+	@DatabaseSetup(value = "/TODO/setUp/")
+	void init処理で既存のタスクがモデルへ渡される() throws Exception {
 		
 		// mockMvcで「/todo/init」へgetリクエストを送信
-		
+		this.mockMvc.perform(get("/todo/init"))
 		// モデルへDBのレコードがリストとして渡される
+			.andExpect(model().attribute("todoForm", hasProperty(
+					"todoList", hasItem(
+							hasProperty(
+									"task", is("task1")
+							)
+					)
+			)));
 	}
 	
 	@Test
