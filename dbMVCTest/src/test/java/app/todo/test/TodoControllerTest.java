@@ -77,7 +77,7 @@ public class TodoControllerTest {
 	 */
 	@Test
 	void init処理でviewとしてtodoが渡される() throws Exception {
-		this.mockMvc.perform(get("/todo/init")).andDo(print())
+		this.mockMvc.perform(get("/todo/init"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("todo"));
 	}
@@ -118,6 +118,18 @@ public class TodoControllerTest {
 			.param("newTask", "newTask"));
 		
 	}
+	@Test
+	void 空文字で登録ボタンをクリックするとエラーとなる() throws Exception {
+		
+		this.mockMvc.perform(post("/todo/save")
+			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+			.param("newTask", ""))
+			.andExpect(model().hasErrors()) // 新規タスク部分にエラーが存在するか
+			.andExpect(model().errorCount(1))
+			.andExpect(model().attributeHasFieldErrors("todoForm", "newTask"))
+			.andExpect(view().name("todo")).andDo(print());
+		
+	}
 	
 	/**
 	 * 画面の入力で既存レコードが更新されるか検証
@@ -140,7 +152,6 @@ public class TodoControllerTest {
 				);
 		
 	}
-	
 	/**
 	 * 画面で選択したタスクが削除されるかどうか検証する
 	 * 更新処理と同様、URIで指定する対象はヘルパーから取得

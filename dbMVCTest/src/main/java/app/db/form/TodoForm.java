@@ -2,6 +2,9 @@ package app.db.form;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import app.db.entity.TodoItem;
 
 /**
@@ -12,9 +15,11 @@ import app.db.entity.TodoItem;
 public class TodoForm {
 	
 	// 新しく追加されるタスク
+	@NotBlank(message = "入力してください")
 	private String newTask;
 	
 	// 既存のタスクリスト
+	@Valid
 	private List<TodoItem> todoList;
 
 	public String getNewTask() {

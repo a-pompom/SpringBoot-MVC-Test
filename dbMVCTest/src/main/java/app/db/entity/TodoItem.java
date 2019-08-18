@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * Todoリストの各タスクを格納するためのEntity
@@ -32,6 +34,7 @@ public class TodoItem {
 	}
 
 	@Column(name = "task")
+	@NotBlank(message = "入力してください")
 	public String getTask() {
 		return task;
 	}

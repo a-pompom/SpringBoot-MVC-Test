@@ -2,11 +2,15 @@ package app.db.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import app.db.dao.TodoDao;
 import app.db.entity.TodoItem;
@@ -44,13 +48,17 @@ public class TodoController {
 	 * @return 新規レコードをリストへ追加した後に再描画
 	 */
 	@RequestMapping("/save")
-	private String save(TodoForm form) {
+	private String save(@Valid TodoForm form, BindingResult result) {
+		if (result.hasErrors()) {
+			return "todo";
+		}
+		
 		TodoItem entity = new TodoItem();
 		entity.setTask(form.getNewTask());
 		
 		todoDao.createTask(entity);
 		
-		return "redirect:/todo/init";
+		return "redirect:/todo/inito";
 	}
 	
 	/**
