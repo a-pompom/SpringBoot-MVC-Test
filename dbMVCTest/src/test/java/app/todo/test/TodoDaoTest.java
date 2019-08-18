@@ -53,9 +53,12 @@ public class TodoDaoTest {
 	
 	private TodoDao todoDao;
 	
+	private TodoTestHelper helper;
+	
 	@BeforeEach
 	void setUp() {
 		// EntityManagerからDaoを作成
+		this.helper = new TodoTestHelper(em);
 		this.todoDao = new TodoDao(em);
 		
 	}
@@ -87,17 +90,36 @@ public class TodoDaoTest {
 	}
 	
 	@Test
+	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void updateTaskで編集対象となったタスクが更新される() {
-		// DaoのupdateTaskを実行
 		
-		// update処理を行った後に期待結果DBと結果が一致するかを検証 
+		long updateTargetId = helper.getIdForTarget();
+		TodoItem entity = new TodoItem();
+		entity.setTodoId(updateTargetId);
+		entity.setTask("task3mod");
+		
+		// DaoのupdateTaskを実行
+		todoDao.updateTask(entity);
+				 
 	}
 	
+	/**
+	 * Daoによる削除処理のテスト
+	 * IDを指定することで対応したものが削除されるか検証
+	 */
 	@Test
+	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void deleteTaskで削除対象となったタスクが削除される() {
-		// DaoのdeleteTaskを実行
 		
-		// delete後の処理結果が期待結果と一致するかを検証
+		// IDは自動で採番されるものなので、
+		// 画面と同様DBから取得した結果をループで回し、削除対象のものについて、IDを取得する
+		long deleteTargetId = helper.getIdForTarget();
+		
+		
+		// DaoのdeleteTaskを実行
+		todoDao.deleteTask(deleteTargetId);
 	}
 	
 	

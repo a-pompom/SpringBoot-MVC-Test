@@ -10,6 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +60,17 @@ public class TodoControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@PersistenceContext
+	private EntityManager em;
+	
+	private TodoTestHelper helper;
+	
+	@BeforeEach
+	void setUp() {
+		this.helper = new TodoTestHelper(em);
+		
+	}
+	
 	@Test
 	void init処理でviewとしてtodoが渡される() throws Exception {
 		this.mockMvc.perform(get("/todo/init")).andDo(print())
@@ -97,20 +112,35 @@ public class TodoControllerTest {
 	}
 	
 	@Test
-	void update処理で既存タスクが更新される() {
+	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
+	void update処理で既存タスクが更新される() throws Exception{
 		
 		// mockMvcで「todo/update」へpostリクエストを送信
+		long updateTargetId = helper.getIdForTarget();
+		int updateTargetIndex = 2;
 		
-		// 画面で選択されたタスクと対応したDBの既存レコードが更新される
+		this.mockMvc.perform(post("/todo/update/" + updateTargetIndex + "/" + updateTargetId)
+				.param("todoList[" + updateTargetIndex + "].task", "task3mod")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				);
 		
 	}
 	
+	/**
+	 * 画面で選択したタスクが削除されるかどうか検証する
+	 * @throws Exception
+	 */
 	@Test
-	void delete処理で既存タスクが消去される() {
+	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
+	void delete処理で既存タスクが消去される() throws Exception {
+		long deleteTargetId = helper.getIdForTarget();
 		
-		// mockMvcで「todo/delete」へpostリクエストを送信
+		this.mockMvc.perform(post("/todo/delete/" + deleteTargetId)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				);
 		
-		// 画面で選択されたタスクと対応したDBの既存レコードが削除される
 	}
 
 }

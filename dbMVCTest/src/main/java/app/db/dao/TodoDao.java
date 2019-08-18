@@ -44,5 +44,28 @@ public class TodoDao {
 		
 		em.flush();
 	}
+	
+	/**
+	 * 指定されたタスクを編集する
+	 * @param task 更新対象のエンティティ
+	 */
+	@Transactional
+	public void updateTask(TodoItem task) {
+		em.merge(task);
+		
+		em.flush();
+	}
+	
+	/**
+	 * 指定されたタスクを削除する
+	 * @param taskId 削除対象を識別するためのID
+	 */
+	@Transactional
+	public void deleteTask(long taskId) {
+		String query = "delete from todo_list ";
+		query += "where todo_id = " + taskId;
+		
+		em.createNativeQuery(query).executeUpdate();
+	}
 
 }
