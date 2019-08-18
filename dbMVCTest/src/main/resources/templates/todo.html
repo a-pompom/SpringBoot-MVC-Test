@@ -16,6 +16,7 @@
                 <div class="new-task">
                     <h4>新しくやること</h4>
                     <input type="text" placeholder="やること" th:field="*{newTask}" class="new-task__text">
+                    <span th:if="${#fields.hasErrors('newTask')}" th:errors="*{newTask}">NewTask error</span>
                     <button type="submit" th:formaction="@{/todo/save}" class="new-task__button button--save">やること追加</button>
                 </div>
                 
@@ -25,6 +26,8 @@
                 <ul th:each="task, i : *{todoList}" th:object="${todoForm.todoList[__${i.index}__]}" class="todo-list">
                     <li class="todo-list__item">
                         <input type="text" th:field="*{task}" class="todo-list__item-text">
+                        <span th:if="${#fields.hasErrors('task')}" th:errors="*{task}">Task error</span>
+                        <p th:text="${todoForm.todoList[__${i.index}__].todoId}"></p>
                         <button type="submit" th:formaction="@{/todo/update/__${i.index}__/__*{todoId}__}" class="todo-list__item-button button--save">編集</button>
                         <button type="submit" th:formaction="@{/todo/delete/__*{todoId}__}" class="todo-list__item-button button--delete">削除</button>
                     </li>
