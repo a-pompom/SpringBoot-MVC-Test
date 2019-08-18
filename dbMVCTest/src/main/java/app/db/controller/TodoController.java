@@ -24,6 +24,12 @@ public class TodoController {
 	@Autowired
 	TodoDao todoDao;
 	
+	/**
+	 * 初期処理
+	 * DBからタスクを全て取得し、フォームへセットすることで画面での一覧表示を可能とする
+	 * @param form todoList及び新規入力を格納するためのフォーム
+	 * @return todoListを表示するためのview
+	 */
 	@RequestMapping("/init")
 	private String init(TodoForm form) {
 		List<TodoItem> todoList = todoDao.findAllTask();
@@ -32,6 +38,11 @@ public class TodoController {
 		return "todo";
 	}
 	
+	/**
+	 * フォームの入力をもとにDBへ新規レコードを登録する
+	 * @param form 新規レコード用の入力を格納したフォーム
+	 * @return 新規レコードをリストへ追加した後に再描画
+	 */
 	@RequestMapping("/save")
 	private String save(TodoForm form) {
 		TodoItem entity = new TodoItem();
@@ -42,6 +53,13 @@ public class TodoController {
 		return "redirect:/todo/init";
 	}
 	
+	/**
+	 * 画面上で指定されたタスクを更新する
+	 * @param taskIndex リスト内のタスクのインデックス listからgetメソッドを呼び出す際の引数として利用
+	 * @param taskId 自動採番されるタスクのID
+	 * @param form
+	 * @return リストへ結果を反映させるために再描画
+	 */
 	@RequestMapping("/update/{taskIndex}/{taskId}")
 	private String update(@PathVariable("taskIndex")int taskIndex, @PathVariable("taskId")long taskId, TodoForm form) {
 		TodoItem entity = form.getTodoList().get(taskIndex);

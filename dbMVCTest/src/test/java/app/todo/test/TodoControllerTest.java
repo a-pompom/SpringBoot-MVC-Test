@@ -71,6 +71,10 @@ public class TodoControllerTest {
 		
 	}
 	
+	/**
+	 * viewが正しく返されるか検証
+	 * @throws Exception
+	 */
 	@Test
 	void init処理でviewとしてtodoが渡される() throws Exception {
 		this.mockMvc.perform(get("/todo/init")).andDo(print())
@@ -100,6 +104,10 @@ public class TodoControllerTest {
 			)));
 	}
 	
+	/**
+	 * 画面の入力から新規レコードがDBへ登録されるか検証
+	 * @throws Exception
+	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
@@ -111,6 +119,12 @@ public class TodoControllerTest {
 		
 	}
 	
+	/**
+	 * 画面の入力で既存レコードが更新されるか検証
+	 * 今回は画面情報を利用しないので、対象の自動採番されるIDを取得することができない。
+	 * これを解決するため、ヘルパーを経由して対象のIDを取得することで遷移先のURIを明示
+	 * @throws Exception
+	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
@@ -129,6 +143,7 @@ public class TodoControllerTest {
 	
 	/**
 	 * 画面で選択したタスクが削除されるかどうか検証する
+	 * 更新処理と同様、URIで指定する対象はヘルパーから取得
 	 * @throws Exception
 	 */
 	@Test
@@ -142,5 +157,4 @@ public class TodoControllerTest {
 				);
 		
 	}
-
 }

@@ -3,8 +3,6 @@ package app.todo.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -55,6 +53,7 @@ public class TodoDaoTest {
 	
 	private TodoTestHelper helper;
 	
+	// setUp処理 ヘルパー・Daoを永続化コンテキストをもとに初期化
 	@BeforeEach
 	void setUp() {
 		// EntityManagerからDaoを作成
@@ -63,6 +62,9 @@ public class TodoDaoTest {
 		
 	}
 	
+	/**
+	 * Create処理でDBへレコードが登録されるか検証
+	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
@@ -72,8 +74,6 @@ public class TodoDaoTest {
 		
 		// DaoのcreateTaskメソッドを実行
 		todoDao.createTask(entity);
-		
-		// 実行後のDBに期待結果DBと同様の新規タスクレコードが追加されていること
 	}
 	
 	/**
@@ -89,12 +89,19 @@ public class TodoDaoTest {
 		assertThat(actual, is(3));
 	}
 	
+	/**
+	 * EntityによってDBの既存レコードが更新されるか検証
+	 * 既存レコードのID(Setupで生成されるもの)は自動採番されるもので特定できないので
+	 * ヘルパーを経由して取得することで処理対象を明示
+	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void updateTaskで編集対象となったタスクが更新される() {
 		
+		// 更新対象となる既存エンティティのIDを別途取得
 		long updateTargetId = helper.getIdForTarget();
+		
 		TodoItem entity = new TodoItem();
 		entity.setTodoId(updateTargetId);
 		entity.setTask("task3mod");
@@ -121,7 +128,4 @@ public class TodoDaoTest {
 		// DaoのdeleteTaskを実行
 		todoDao.deleteTask(deleteTargetId);
 	}
-	
-	
-
 }
