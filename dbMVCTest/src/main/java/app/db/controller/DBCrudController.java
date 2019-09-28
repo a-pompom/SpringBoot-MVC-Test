@@ -53,7 +53,7 @@ public class DBCrudController {
 		User updateTargetUser = form.getUserList().get(index);
 		updateTargetUser.setUserId(userId);
 		
-		userDao.saveOrUpdate(updateTargetUser);
+		userDao.save(updateTargetUser);
 		
 		return "redirect:/crud/init";
 	}

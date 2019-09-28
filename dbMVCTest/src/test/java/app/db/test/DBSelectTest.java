@@ -5,11 +5,9 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -47,9 +45,8 @@ import app.db.main.DbMvcTestApplication;
 @SpringBootTest(classes = DbMvcTestApplication.class)
 public class DBSelectTest {
 	
-	// 永続化のライフサイクルを扱うためのアノテーション
-	@PersistenceContext
-    protected EntityManager em;
+	@Autowired
+	private UserDao userDao;
 	
 	// DatabaseSetupのvalueにCSVファイルのパスを設定することで、「table-ordering.txt」を参照し、
 	// 順次テーブルを作成することでテスト用のテーブル群を作成する
@@ -62,9 +59,6 @@ public class DBSelectTest {
 	@DatabaseSetup(value = "/testData/")
 	@Transactional
 	public void contextLoads() throws Exception {
-		
-		UserDao userDao = new UserDao(em);
-		
 		List<User> userList = userDao.findAllUser();
 		
 		// Daoで正常にテーブルからレコードを取得できたか
