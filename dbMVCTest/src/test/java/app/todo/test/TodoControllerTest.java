@@ -60,17 +60,6 @@ public class TodoControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@PersistenceContext
-	private EntityManager em;
-	
-	private TodoTestHelper helper;
-	
-	@BeforeEach
-	void setUp() {
-		this.helper = new TodoTestHelper(em);
-		
-	}
-	
 	/**
 	 * viewが正しく返されるか検証
 	 * @throws Exception
@@ -127,7 +116,7 @@ public class TodoControllerTest {
 			.andExpect(model().hasErrors()) // 新規タスク部分にエラーが存在するか
 			.andExpect(model().errorCount(1))
 			.andExpect(model().attributeHasFieldErrors("todoForm", "newTask"))
-			.andExpect(view().name("todo")).andDo(print());
+			.andExpect(view().name("todo"));
 		
 	}
 	
@@ -143,7 +132,7 @@ public class TodoControllerTest {
 	void update処理で既存タスクが更新される() throws Exception{
 		
 		// mockMvcで「todo/update」へpostリクエストを送信
-		long updateTargetId = helper.getIdForTarget();
+		long updateTargetId = 3L;
 		int updateTargetIndex = 2;
 		
 		this.mockMvc.perform(post("/todo/update/" + updateTargetIndex + "/" + updateTargetId)
@@ -161,7 +150,7 @@ public class TodoControllerTest {
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void delete処理で既存タスクが消去される() throws Exception {
-		long deleteTargetId = helper.getIdForTarget();
+		long deleteTargetId = 3L;
 		
 		this.mockMvc.perform(post("/todo/delete/" + deleteTargetId)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)

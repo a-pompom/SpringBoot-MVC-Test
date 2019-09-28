@@ -3,12 +3,10 @@ package app.todo.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,28 +43,14 @@ import app.db.test.CsvDataSetLoader;
 @Transactional
 public class TodoDaoTest {
 	
-	// 永続化のライフサイクルを扱うためのアノテーション
-	@PersistenceContext
-	private EntityManager em;
-	
+	@Autowired
 	private TodoDao todoDao;
-	
-	private TodoTestHelper helper;
-	
-	// setUp処理 ヘルパー・Daoを永続化コンテキストをもとに初期化
-	@BeforeEach
-	void setUp() {
-		// EntityManagerからDaoを作成
-		this.helper = new TodoTestHelper(em);
-		this.todoDao = new TodoDao(em);
-		
-	}
 	
 	/**
 	 * Create処理でDBへレコードが登録されるか検証
 	 */
 	@Test
-	@DatabaseSetup(value = "/TODO/setUp/")
+	@DatabaseSetup(value = "/TODO/setUp/create/")
 	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void createTaskでエンティティから新規タスクが生成される() {
 		TodoItem entity = new TodoItem();
@@ -96,19 +80,17 @@ public class TodoDaoTest {
 	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
-	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void updateTaskで編集対象となったタスクが更新される() {
 		
 		// 更新対象となる既存エンティティのIDを別途取得
-		long updateTargetId = helper.getIdForTarget();
 		
-		TodoItem entity = new TodoItem();
-		entity.setTodoId(updateTargetId);
+		TodoItem entity = todoDao.findByTodoId(3L);
 		entity.setTask("task3mod");
 		
 		// DaoのupdateTaskを実行
-		todoDao.updateTask(entity);
-				 
+		TodoItem actual = todoDao.updateTask(entity);
+		
+		assertThat(actual.getTask(), is("task3mod"));
 	}
 	
 	/**
@@ -119,13 +101,8 @@ public class TodoDaoTest {
 	@DatabaseSetup(value = "/TODO/setUp/")
 	@ExpectedDatabase(value = "/TODO/delete/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void deleteTaskで削除対象となったタスクが削除される() {
-		
-		// IDは自動で採番されるものなので、
-		// 画面と同様DBから取得した結果をループで回し、削除対象のものについて、IDを取得する
-		long deleteTargetId = helper.getIdForTarget();
-		
-		
+			
 		// DaoのdeleteTaskを実行
-		todoDao.deleteTask(deleteTargetId);
+		todoDao.deleteTask(3L);
 	}
 }

@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -51,11 +52,11 @@ public class CRUDDaoTest {
 	private EntityManager em;
 	
 	// ユーザ情報を扱うためのDAOクラス
+	@Autowired
 	private UserDao userDao;
 	
 	@BeforeEach
 	void setUp() {
-		this.userDao = new UserDao(em);
 	}
 	
 	// select処理が正常に動作するか検証

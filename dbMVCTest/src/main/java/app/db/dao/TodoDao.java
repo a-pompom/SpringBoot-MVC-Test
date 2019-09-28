@@ -2,12 +2,11 @@ package app.db.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.db.entity.TodoItem;
+import app.db.util.QueryBuilder;
 
 /**
  * Todoリスト用のテーブルを操作するためのDaoクラス
@@ -15,23 +14,17 @@ import app.db.entity.TodoItem;
  *
  */
 @Component
-public class TodoDao {
-	
-	private EntityManager em;
-	
-	public TodoDao(EntityManager em) {
-		this.em = em;
-	}
+public class TodoDao extends BaseDao<TodoItem>{
 	
 	/**
 	 * データベースから画面表示用に全てのタスクを取得する
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<TodoItem> findAllTask() {
-		String query = "select * from todo_list";
+		QueryBuilder query = new QueryBuilder();
+		query.append("select * from todo_list");
 		
-		return em.createNativeQuery(query, TodoItem.class).getResultList();
+		return findResultList(query.createQuery(TodoItem.class, getEm()));
 	}
 	
 	/**
@@ -39,10 +32,8 @@ public class TodoDao {
 	 * @param task
 	 */
 	@Transactional
-	public void createTask(TodoItem task) {
-		em.persist(task);
-		
-		em.flush();
+	public TodoItem createTask(TodoItem task) {
+		return saveOrUpdate(task);
 	}
 	
 	/**
@@ -50,10 +41,8 @@ public class TodoDao {
 	 * @param task 更新対象のエンティティ
 	 */
 	@Transactional
-	public void updateTask(TodoItem task) {
-		em.merge(task);
-		
-		em.flush();
+	public TodoItem updateTask(TodoItem task) {
+		return saveOrUpdate(task);
 	}
 	
 	/**
@@ -62,10 +51,20 @@ public class TodoDao {
 	 */
 	@Transactional
 	public void deleteTask(long taskId) {
-		String query = "delete from todo_list ";
-		query += "where todo_id = " + taskId;
+		QueryBuilder query = new QueryBuilder();
+		query.append("delete from todo_list ");
+		query.append("where todo_id = :taskId").setParam("taskId", taskId);
 		
-		em.createNativeQuery(query).executeUpdate();
+		query.createQuery(TodoItem.class, getEm()).executeUpdate();
+	}
+	
+	public TodoItem findByTodoId(long taskId) {
+		QueryBuilder query = new QueryBuilder();
+		
+		query.append("select * from todo_list ");
+		query.append("where todo_id = :taskId").setParam("taskId", taskId);
+		
+		return findSingle(query.createQuery(TodoItem.class, getEm()));
 	}
 
 }

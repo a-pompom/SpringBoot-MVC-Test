@@ -1,8 +1,5 @@
 package app.db.test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.CoreMatchers.is;
@@ -47,10 +44,6 @@ import app.db.main.DbMvcTestApplication;
 @SpringBootTest(classes = {HelloDBController.class, DbMvcTestApplication.class})
 public class DBModelTest {
 	
-	// 永続化のライフサイクルを扱うためのアノテーション
-	@PersistenceContext
-	protected EntityManager em;
-	
 	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
 	@Autowired
 	private MockMvc mockMvc;
@@ -69,8 +62,6 @@ public class DBModelTest {
 								"userName", is("test1")
 						)
 					)
-			)));
-		
+			)));	
 	}
-	
 }

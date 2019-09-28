@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "todo_list")
-public class TodoItem {
+public class TodoItem extends BaseEntity{
 	
 	private Long todoId;
 	
