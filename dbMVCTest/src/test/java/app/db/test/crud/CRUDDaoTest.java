@@ -3,16 +3,10 @@ package app.db.test.crud;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -26,8 +20,8 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import app.db.dao.UserDao;
 import app.db.entity.User;
-import app.db.main.DbMvcTestApplication;
 import app.db.test.CsvDataSetLoader;
+import app.test.util.DaoTestApplication;
 
 /**
  * Daoレイヤーのテストクラス
@@ -35,7 +29,6 @@ import app.db.test.CsvDataSetLoader;
  * @author aoi
  *
  */
-@ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
 	  DependencyInjectionTestExecutionListener.class,
@@ -43,21 +36,13 @@ import app.db.test.CsvDataSetLoader;
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
-@SpringBootTest(classes = {DbMvcTestApplication.class})
+@SpringBootTest(classes = {DaoTestApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 public class CRUDDaoTest {
-	
-	// 永続化のライフサイクルを扱うためのアノテーション
-	@PersistenceContext
-	private EntityManager em;
 	
 	// ユーザ情報を扱うためのDAOクラス
 	@Autowired
 	private UserDao userDao;
-	
-	@BeforeEach
-	void setUp() {
-	}
 	
 	// select処理が正常に動作するか検証
 	// 今回はただselectで取得しているだけなので、サイズから妥当性を検証する。
@@ -93,10 +78,6 @@ public class CRUDDaoTest {
 		user.setUserName("test1mod");
 		
 		userDao.saveOrUpdate(user);
-		
-		// 永続コンテキストとDBの同期をとることで
-		// UPDATE結果のレコード群と比較が可能となる
-		this.em.flush();
 	}
 
 }

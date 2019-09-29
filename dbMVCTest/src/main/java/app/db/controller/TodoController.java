@@ -57,7 +57,7 @@ public class TodoController {
 		
 		todoDao.createTask(entity);
 		
-		return "redirect:/todo/inito";
+		return "redirect:/todo/init";
 	}
 	
 	/**

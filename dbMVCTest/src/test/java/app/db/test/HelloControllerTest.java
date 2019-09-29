@@ -1,22 +1,20 @@
 package app.db.test;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import app.db.controller.HelloController;
+import app.db.main.DbMvcTestApplication;
 
 /**
  * @ExtendWith...JUnit5でテストクラスを実行させるために必要なアノテーション
@@ -26,9 +24,8 @@ import app.db.controller.HelloController;
  * @author aoi
  *
  */
-@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-@SpringBootTest(classes = HelloController.class)
+@SpringBootTest(classes = DbMvcTestApplication.class)
 public class HelloControllerTest {
 	
 	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
@@ -39,7 +36,6 @@ public class HelloControllerTest {
 	@Test
 	void init処理が走って200が返る() throws Exception {
 		// andDo(print())でリクエスト・レスポンスを表示
-		// ビューのレンダリング結果までは得られないので、画面上の確認はここではできない
 		this.mockMvc.perform(get("/hello/init")).andDo(print())
 			.andExpect(status().isOk());
 	}

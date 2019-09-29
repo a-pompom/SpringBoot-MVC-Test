@@ -5,15 +5,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +29,7 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import app.db.controller.TodoController;
+
 import app.db.main.DbMvcTestApplication;
 import app.db.test.CsvDataSetLoader;
 
@@ -52,7 +47,7 @@ import app.db.test.CsvDataSetLoader;
 	  DbUnitTestExecutionListener.class
 	})
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {TodoController.class, DbMvcTestApplication.class})
+@SpringBootTest(classes = {DbMvcTestApplication.class})
 @Transactional
 public class TodoControllerTest {
 	

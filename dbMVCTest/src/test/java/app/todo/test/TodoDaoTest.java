@@ -3,7 +3,6 @@ package app.todo.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import app.db.dao.TodoDao;
 import app.db.entity.TodoItem;
-import app.db.main.DbMvcTestApplication;
 import app.db.test.CsvDataSetLoader;
+import app.test.util.DaoTestApplication;
 
 /**
  * TODOリストのDaoのテストクラス
@@ -39,7 +38,7 @@ import app.db.test.CsvDataSetLoader;
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
-@SpringBootTest(classes = {DbMvcTestApplication.class})
+@SpringBootTest(classes = {DaoTestApplication.class})
 @Transactional
 public class TodoDaoTest {
 	

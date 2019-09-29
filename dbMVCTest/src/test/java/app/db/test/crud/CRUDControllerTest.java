@@ -28,7 +28,6 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import app.db.controller.DBCrudController;
 import app.db.main.DbMvcTestApplication;
 import app.db.test.CsvDataSetLoader;
 
@@ -47,7 +46,7 @@ import app.db.test.CsvDataSetLoader;
 	  DbUnitTestExecutionListener.class
 	})
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {DBCrudController.class, DbMvcTestApplication.class})
+@SpringBootTest(classes = {DbMvcTestApplication.class})
 @Transactional // クラス単位に@Transactionalアノテーションを付与することでテストの度にDBがロールバックされる
 public class CRUDControllerTest {
 	
@@ -68,7 +67,6 @@ public class CRUDControllerTest {
 						)
 					)
 			)));
-		
 	}
 	
 	/**
@@ -101,5 +99,4 @@ public class CRUDControllerTest {
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED));
 				
 	}
-
 }

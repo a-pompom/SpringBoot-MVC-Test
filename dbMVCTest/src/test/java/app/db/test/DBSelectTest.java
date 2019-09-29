@@ -6,11 +6,9 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -22,7 +20,7 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 
 import app.db.dao.UserDao;
 import app.db.entity.User;
-import app.db.main.DbMvcTestApplication;
+import app.test.util.DaoTestApplication;
 
 /**
  * DBからテーブルデータを取得するテストを行うためのテストクラス
@@ -34,7 +32,6 @@ import app.db.main.DbMvcTestApplication;
  * @author aoi
  *
  */
-@ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
 	  DependencyInjectionTestExecutionListener.class,
@@ -42,7 +39,7 @@ import app.db.main.DbMvcTestApplication;
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
-@SpringBootTest(classes = DbMvcTestApplication.class)
+@SpringBootTest(classes = {DaoTestApplication.class})
 public class DBSelectTest {
 	
 	@Autowired
