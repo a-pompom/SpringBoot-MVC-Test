@@ -49,13 +49,24 @@ public class HelloControllerTest {
 			.andExpect(model().attribute("message", "hello!"));
 	}
 	
+	@Test
+	void init処理でモデルへユーザEntityが格納される() throws Exception {
+		this.mockMvc.perform(get("/hello/init"))
+			.andExpect(model()
+					.attribute("user", hasProperty(
+										"userName", is("test0")
+										)
+							)
+					);
+	}
+	
 	// リクエストスコープへ渡されたモデルの中で、入れ子となっている、かつリスト構造を持つものについて
 	// 検証を行う。 ネストされたものについては、「hasProperty」でプロパティの存在検証を行い、
 	// 最下層まで到達することで値の検証が可能となる。
 	// リスト要素については、hasItemで順番を問わずリストへアクセスし、指定されたプロパティが指定の値となる要素が存在するかを検証。
 	// 存在する場合のみテストをグリーンとする
 	@Test
-	void init処理でモデルのフォームへユーザリストが格納されるか() throws Exception {
+	void init処理でモデルのフォームへユーザリストが格納される() throws Exception {
 		
 		this.mockMvc.perform(get("/hello/init"))
 			.andExpect(model().attribute("dbForm", hasProperty(

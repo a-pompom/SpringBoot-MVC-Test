@@ -40,6 +40,9 @@ public class HelloController {
 		form.setUserList(userList);
 		
 		model.addAttribute("message", "hello!");
+		
+		model.addAttribute("user", user);
+		
 		model.addAttribute("dbForm", form);
 		
 		return "hello";
