@@ -37,7 +37,6 @@ public class BaseDao<T extends BaseEntity> {
 	public T saveOrUpdate(T entity) {
 		
 		T result = em.merge(entity);
-		em.flush();
 		
 		return result;
 	}

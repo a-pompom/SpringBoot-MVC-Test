@@ -3,14 +3,12 @@ package app.todo.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,20 +28,23 @@ import app.test.util.DaoTestApplication;
  * @author aoi
  *
  */
-@ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
 	  DependencyInjectionTestExecutionListener.class,
-	  DirtiesContextTestExecutionListener.class,
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
-@SpringBootTest(classes = {DaoTestApplication.class})
+@SpringBootTest(classes = {DaoTestApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 public class TodoDaoTest {
 	
 	@Autowired
 	private TodoDao todoDao;
+	
+	@AfterEach
+	void tearDown() {
+		todoDao.getEm().flush();
+	}
 	
 	/**
 	 * Create処理でDBへレコードが登録されるか検証
@@ -74,22 +75,19 @@ public class TodoDaoTest {
 	
 	/**
 	 * EntityによってDBの既存レコードが更新されるか検証
-	 * 既存レコードのID(Setupで生成されるもの)は自動採番されるもので特定できないので
-	 * ヘルパーを経由して取得することで処理対象を明示
 	 */
 	@Test
 	@DatabaseSetup(value = "/TODO/setUp/")
+	@ExpectedDatabase(value = "/TODO/update/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void updateTaskで編集対象となったタスクが更新される() {
 		
 		// 更新対象となる既存エンティティのIDを別途取得
-		
-		TodoItem entity = todoDao.findByTodoId(3L);
+		TodoItem entity = new TodoItem();
+		entity.setTodoId(3L);
 		entity.setTask("task3mod");
 		
 		// DaoのupdateTaskを実行
-		TodoItem actual = todoDao.updateTask(entity);
-		
-		assertThat(actual.getTask(), is("task3mod"));
+		todoDao.updateTask(entity);
 	}
 	
 	/**

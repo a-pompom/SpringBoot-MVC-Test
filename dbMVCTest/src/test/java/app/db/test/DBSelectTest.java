@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,12 +33,11 @@ import app.test.util.DaoTestApplication;
  */
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
-	  DependencyInjectionTestExecutionListener.class,
-	  DirtiesContextTestExecutionListener.class,
+	DependencyInjectionTestExecutionListener.class,
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
-@SpringBootTest(classes = {DaoTestApplication.class})
+@SpringBootTest(classes = {DaoTestApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class DBSelectTest {
 	
 	@Autowired
@@ -55,7 +53,7 @@ public class DBSelectTest {
 	@Test
 	@DatabaseSetup(value = "/testData/")
 	@Transactional
-	public void contextLoads() throws Exception {
+	public void findAllUserでユーザレコードが取得できる() throws Exception {
 		List<User> userList = userDao.findAllUser();
 		
 		// Daoで正常にテーブルからレコードを取得できたか

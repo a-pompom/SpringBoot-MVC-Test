@@ -9,16 +9,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +27,7 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-
+import app.db.dao.TodoDao;
 import app.db.main.DbMvcTestApplication;
 import app.db.test.CsvDataSetLoader;
 
@@ -38,11 +36,9 @@ import app.db.test.CsvDataSetLoader;
  * @author aoi
  *
  */
-@ExtendWith(SpringExtension.class)
 @DbUnitConfiguration(dataSetLoader = CsvDataSetLoader.class)
 @TestExecutionListeners({
 	  DependencyInjectionTestExecutionListener.class,
-	  DirtiesContextTestExecutionListener.class,
 	  TransactionalTestExecutionListener.class,
 	  DbUnitTestExecutionListener.class
 	})
@@ -54,6 +50,14 @@ public class TodoControllerTest {
 	//mockMvc TomcatサーバへデプロイすることなくHttpリクエスト・レスポンスを扱うためのMockオブジェクト
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private TodoDao todoDao;
+	
+	@AfterEach
+	void tearDown() {
+		todoDao.getEm().flush();
+	}
 	
 	/**
 	 * viewが正しく返されるか検証
@@ -93,7 +97,7 @@ public class TodoControllerTest {
 	 * @throws Exception
 	 */
 	@Test
-	@DatabaseSetup(value = "/TODO/setUp/")
+	@DatabaseSetup(value = "/TODO/setUp/create")
 	@ExpectedDatabase(value = "/TODO/create/", assertionMode=DatabaseAssertionMode.NON_STRICT)
 	void save処理で新規タスクがDBへ登録される() throws Exception {
 		
@@ -118,7 +122,7 @@ public class TodoControllerTest {
 	/**
 	 * 画面の入力で既存レコードが更新されるか検証
 	 * 今回は画面情報を利用しないので、対象の自動採番されるIDを取得することができない。
-	 * これを解決するため、ヘルパーを経由して対象のIDを取得することで遷移先のURIを明示
+	 * そのため、今回はアップデート対象
 	 * @throws Exception
 	 */
 	@Test
